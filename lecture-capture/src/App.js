@@ -10,11 +10,12 @@ import ScreenShareWebcam from "./Components/recorder.components/screen-webcam.re
 function App() {
   return (
       <Router>
-        <Route path='/' exact component={Login}></Route>
-        <Route path="/lecture-capture" component={LectureCaptureHomepage}></Route>
-          <Route path="/screen-share" component={ScreenShareOnly}></Route>
-        <Route exact path="/screen-webcam" component={ScreenShareWebcam}></Route>
-        <Route  path="/webcam" component={WebcamOnly}></Route>
+        <Route path='/' exact component={Login}/>
+          <Route path="/dashboard" component={Dashboard}/>
+        <Route path="/lecture-capture" component={LectureCaptureHomepage}/>
+          <Route path="/screen-share" component={ScreenShareOnly}/>
+        <Route exact path="/screen-webcam" component={ScreenShareWebcam}/>
+        <Route  path="/webcam" component={WebcamOnly}/>
       </Router>
   );
 }

@@ -1,8 +1,8 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     MDBContainer,
     MDBIcon,
-    MDBBtn, MDBRow, MDBCol, MDBBtnGroup, MDBCard, MDBCardBody
+    MDBBtn, MDBRow, MDBCol, MDBBtnGroup, MDBCard, MDBCardBody, MDBBadge
 } from 'mdbreact';
 import '../recorder.components/css.recorder/recorder.css';
 import { useReactMediaRecorder} from "react-media-recorder";
@@ -26,7 +26,48 @@ const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
     );
 };
 
-const RecordWebcam = () => {
+const RecordWebcam = (props) => {
+
+    //timer
+    const [second, setSecond] = useState("00");
+    const [minute, setMinute] = useState("00");
+    const [isActive, setIsActive] = useState(false);
+    const [counter, setCounter] = useState(0);
+
+    useEffect(() => {
+        let intervalId;
+
+        if (isActive) {
+            intervalId = setInterval(() => {
+                const secondCounter = counter % 60;
+                const minuteCounter = Math.floor(counter / 60);
+
+                let computedSecond =
+                    String(secondCounter).length === 1
+                        ? `0${secondCounter}`
+                        : secondCounter;
+                let computedMinute =
+                    String(minuteCounter).length === 1
+                        ? `0${minuteCounter}`
+                        : minuteCounter;
+
+                setSecond(computedSecond);
+                setMinute(computedMinute);
+
+                setCounter((counter) => counter + 1);
+            }, 650);
+        }
+        return () => clearInterval(intervalId);
+    }, [isActive, counter]);
+
+    //stop timer
+    function stopTimer() {
+        setIsActive(false);
+        setCounter(0);
+        setSecond("00");
+        setMinute("00");
+    }
+
     const {
         status,
         startRecording,
@@ -35,7 +76,7 @@ const RecordWebcam = () => {
         resumeRecording,
         mediaBlobUrl,
         previewStream
-    } = useReactMediaRecorder({ video: true });
+    } = useReactMediaRecorder({ video: true, audio:true, type: 'video/mp4'  });
 
     return (
         <div>
@@ -47,39 +88,54 @@ const RecordWebcam = () => {
                             <h2>Webcam Preview</h2>
                         </MDBRow>
                         <MDBCardBody>
+                            <h4>Recording Status: <MDBBadge color="primary"> {status}</MDBBadge></h4>
+                            <br/>
                             <VideoPreview stream={previewStream}/>
+                            <MDBRow center>
+                                <div style={{ marginLeft: "10px", fontSize: "40px" }}>
+                                    <span className="minute">{minute}</span>
+                                    <span>:</span>
+                                    <span className="second">{second}</span>
+                                </div>
+                            </MDBRow>
                             <MDBRow center >
                                 <MDBCol md='4' >
                                     <MDBBtnGroup vertical>
-                                        <p>{status}</p>
-                                        {status !== 'recording' && (
+                                        {status !== 'recording'  && (
                                             <MDBBtn
-                                                type="button" color="default"  onClick={startRecording}>
+                                                type="button" color="default"  onClick={() => {
+                                                setIsActive(!isActive);
+                                                startRecording();
+                                            }}>
                                                 Start recording </MDBBtn>
                                         )}
                                         {/*<MDBBtn color="default" onClick={startRecording}>Start Recording</MDBBtn>*/}
                                     </MDBBtnGroup>
                                 </MDBCol>
                                 <MDBCol md="4">
+                                    {/*<MDBBtnGroup vertical>*/}
+                                    {/*    {status === 'recording' && (*/}
+                                    {/*        <MDBBtn type="button" color="default" onClick={pauseRecording}>*/}
+                                    {/*            Pause recording*/}
+                                    {/*        </MDBBtn>*/}
+                                    {/*    )}*/}
+                                    {/*    /!*<MDBBtn color="default" onClick={stopRecording}>Stop Recording</MDBBtn>*!/*/}
+                                    {/*</MDBBtnGroup>*/}
+                                    {/*<MDBBtnGroup vertical>*/}
+                                    {/*    {status === 'stopping' && (*/}
+                                    {/*        <MDBBtn type="button" color="default" onClick={resumeRecording}>*/}
+                                    {/*            Resume recording*/}
+                                    {/*        </MDBBtn>*/}
+                                    {/*    )}*/}
+                                    {/*    /!*<MDBBtn color="default" onClick={stopRecording}>Stop Recording</MDBBtn>*!/*/}
+                                    {/*</MDBBtnGroup>*/}
                                     <MDBBtnGroup vertical>
                                         {status === 'recording' && (
-                                            <MDBBtn type="button" color="default" onClick={pauseRecording}>
-                                                Pause recording
-                                            </MDBBtn>
-                                        )}
-                                        {/*<MDBBtn color="default" onClick={stopRecording}>Stop Recording</MDBBtn>*/}
-                                    </MDBBtnGroup>
-                                    <MDBBtnGroup vertical>
-                                        {status === 'stopping' && (
-                                            <MDBBtn type="button" color="default" onClick={resumeRecording}>
-                                                Resume recording
-                                            </MDBBtn>
-                                        )}
-                                        {/*<MDBBtn color="default" onClick={stopRecording}>Stop Recording</MDBBtn>*/}
-                                    </MDBBtnGroup>
-                                    <MDBBtnGroup vertical>
-                                        {status === 'recording' && (
-                                            <MDBBtn type="button" color="default" onClick={stopRecording}>
+                                            <MDBBtn type="button" color="default" onClick={() => {
+                                                stopRecording();
+                                                stopTimer();
+                                                setIsActive(!isActive);
+                                            }}>
                                                 Stop recording
                                             </MDBBtn>
                                         )}
@@ -115,7 +171,7 @@ class WebcamOnly extends React.Component {
                 <Navbar/>
                 <MDBContainer style={container} className="text-center mt-5 pt-5">
                     <MDBCol size='3' left >
-                        <MDBBtn outline rounded size="sm" color="primary" a href='/lecture-capture-home'>
+                        <MDBBtn outline rounded size="sm" color="primary" a href='/lecture-capture'>
                             <MDBIcon far icon="arrow-alt-circle-left" className="mr-1" /> Choose Recording Mode</MDBBtn>
                     </MDBCol>
                     <RecordWebcam/>

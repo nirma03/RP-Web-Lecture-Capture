@@ -154,7 +154,7 @@ class ScreenShareWebcam extends React.Component {
                 <Navbar />
                 <MDBContainer style={container} className="text-center mt-5 pt-5">
                     <MDBCol size='3' >
-                        <MDBBtn outline rounded size="sm" color="default" a href='/'>
+                        <MDBBtn outline rounded size="sm" color="default" a href='/lecture-capture'>
                             <MDBIcon far icon="arrow-alt-circle-left" className="mr-1" /> Choose Recording Mode</MDBBtn>
                     </MDBCol>
                     <RecordWebcam />
