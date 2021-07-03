@@ -1,17 +1,38 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import {MDBCollapse, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBNavItem, MDBNavLink
+import {
+    MDBBtn, MDBCollapse, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBNavItem, MDBNavLink
 } from "mdbreact";
+import {TOKEN_EMAIL, TOKEN_TYPE} from "../login.components/config";
+import { isLogin, logout } from "../login.components/reactAuth";
+
 import '../recorder.components/css.recorder/recorder.css';
 
 class Navbar extends React.Component{
+
     constructor(props) {
         super(props);
         this.state = {
             collapse: false,
+            isLogin: isLogin()
         };
+
         this.onClick = this.onClick.bind(this);
     }
+
+    handleLogout = () => {
+        logout();
+        console.log("logout");
+        this.setState({
+            isLogin: false,
+        });
+    };
+
+    handleNameClick = () => {
+        if (localStorage.getItem(TOKEN_TYPE) === "lecturer") {
+            window.location = "/lecture-capture";
+        }
+    };
 
     onClick() {
         this.setState({
@@ -46,7 +67,9 @@ class Navbar extends React.Component{
                                 </MDBNavbarNav>
                                 <MDBNavbarNav right>
                                     <MDBNavItem>
-                                        <MDBNavLink to="#"><MDBIcon fab icon="facebook-f" /></MDBNavLink>
+                                        <MDBBtn onClick={() => this.handleLogout()} href="/">Logout</MDBBtn>
+                                        {/*<MDBNavLink to="" onClick={() => this.handleLogout()}><MDBIcon fab icon="logout" />*/}
+                                        {/*<a href="/lecture-capture"></a> Logout</MDBNavLink>*/}
                                     </MDBNavItem>
                                 </MDBNavbarNav>
                             </MDBCollapse>
