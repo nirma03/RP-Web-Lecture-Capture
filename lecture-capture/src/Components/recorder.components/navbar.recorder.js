@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import {MDBCollapse, MDBIcon, MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBNavItem, MDBNavLink
 } from "mdbreact";
-import './css/home-page.css';
+import '../recorder.components/css.recorder/recorder.css';
 
 class Navbar extends React.Component{
     constructor(props) {
@@ -35,7 +35,7 @@ class Navbar extends React.Component{
                                         <MDBNavLink to="/">Dashboard</MDBNavLink>
                                     </MDBNavItem>
                                     <MDBNavItem>
-                                        <MDBNavLink to="/lecture-capture-home">Web Lecture Capture</MDBNavLink>
+                                        <MDBNavLink to="/lecture-capture">Web Lecture Capture</MDBNavLink>
                                     </MDBNavItem>
                                     <MDBNavItem>
                                         <MDBNavLink to="#"></MDBNavLink>
